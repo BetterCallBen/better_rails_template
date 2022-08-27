@@ -17,13 +17,8 @@ inject_into_file "Gemfile", after: "group :development, :test do" do
     gem 'faker', '~> 1.9'
     gem 'rspec-rails', '~> 5.0'
     gem 'factory_bot_rails', '~> 5.0'
+    gem 'dotenv-rails'
 
-  RUBY
-end
-
-inject_into_file "Gemfile", after: 'gem "debug", platforms: %i[ mri mingw x64_mingw ]' do
-  <<-RUBY
-    gem "dotenv-rails"
   RUBY
 end
 
