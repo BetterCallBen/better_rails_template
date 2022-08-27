@@ -17,7 +17,7 @@ inject_into_file "Gemfile", after: "group :development, :test do" do
     gem 'faker', '~> 1.9'
     gem 'rspec-rails', '~> 5.0'
     gem 'factory_bot_rails', '~> 5.0'
-    gem 'dotenv-rails'
+    # gem 'dotenv-rails'
 
   RUBY
 end
@@ -109,7 +109,8 @@ gsub_file(
 
 # Flashes
 ########################################
-file "app/views/shared/_flashes.html.erb", <<~HTML
+file "app/views/shared/_flashes.html.erb",
+<<~HTML
   <% if notice %>
     <div class="alert success" data-controller="notice">
       <%= notice.html_safe %>
@@ -159,7 +160,8 @@ after_bundle do
   # Application controller
   ########################################
   run "rm app/controllers/application_controller.rb"
-  file "app/controllers/application_controller.rb", <<~RUBY
+  file "app/controllers/application_controller.rb",
+  <<~RUBY
     class ApplicationController < ActionController::Base
       before_action :authenticate_user!
     end
@@ -168,7 +170,8 @@ after_bundle do
   generate(:controller, "pages", "home", "--skip-routes", "--no-test-framework")
 
   run "rm app/controllers/pages_controller.rb"
-  file "app/controllers/pages_controller.rb", <<~RUBY
+  file "app/controllers/pages_controller.rb",
+  <<~RUBY
     class PagesController < ApplicationController
       skip_before_action :authenticate_user!, only: [ :home ]
 
@@ -217,7 +220,8 @@ after_bundle do
     application.load(definitionsFromContext(context))
   JS
 
-  append_file ".gitignore", <<~JS
+  append_file ".gitignore",
+  <<~JS
 
     import "controllers"
   JS
