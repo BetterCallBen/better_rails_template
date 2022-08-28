@@ -12,6 +12,7 @@ inject_into_file "Gemfile", before: "group :development, :test do" do
 end
 
 inject_into_file "Gemfile", after: "gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]" do <<~RUBY
+    ' '
     gem 'amazing_print', '~> 1.0.0'
     gem 'rspec-rails', '~> 5.0'
     gem 'factory_bot_rails', '~> 5.0'
