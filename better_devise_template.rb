@@ -147,6 +147,14 @@ RUBY
 
 environment generators
 
+# README
+########################################
+read_me_content = <<~MARKDOWN
+Rails app generated with BetterCallBen template.
+MARKDOWN
+file "README.md", read_me_content, force: true
+
+
 ########################################
 # After bundle
 ########################################
@@ -207,7 +215,7 @@ after_bundle do
   # Stimulus
   ########################################
   run "rails webpacker:install:stimulus"
-  run "mkdir app/javascript/controllers"
+  run "rm app/javascript/controllers/hello_controller.js"
 
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
     <<~JS
@@ -216,57 +224,11 @@ after_bundle do
     JS
   end
 
-  file "app/javascript/controllers/index.js",
-  <<~JS
-    import { Application } from "stimulus"
-    import { definitionsFromContext } from "stimulus/webpack-helpers"
-
-    const application = Application.start()
-    const context = require.context("controllers", true, /_controller\.js$/)
-    application.load(definitionsFromContext(context))
-  JS
-
   append_file ".gitignore",
   <<~JS
 
     import "controllers"
   JS
-
-  ## Copy controller
-  file "app/javascript/controllers/copy_controller.js",
-  <<~JS
-    import { Controller } from "stimulus"
-
-    export default class extends Controller {
-      static targets = []
-      static values = {}
-
-      connect() {
-        console.log("BetterCallBen from CopyController!")
-      }
-    }
-  JS
-
-  ## Copy controller
-  file "app/javascript/controllers/notice_controller.js",
-  <<~JS
-    import { Controller } from "stimulus"
-
-    export default class extends Controller {
-      static targets = []
-      static values = {}
-
-      close(event) {
-        event.currentTarget.remove()
-      }
-    }
-  JS
-
-  ## Toto (test file)
-  ########################################
-  file "toto.rb", <<~RUBY
-    puts "Toto!"
-  RUBY
 
   # Heroku
   ########################################
@@ -280,16 +242,46 @@ after_bundle do
   ########################################
   run "curl -L https://raw.githubusercontent.com/lewagon/rails-templates/master/.rubocop.yml > .rubocop.yml"
 
-  # Git
-  ########################################
-  git :init
-  git add: "."
-  git commit: "-m 'First commit with BetterCallBen template with devise'"
-
-  # README
-  ########################################
-  read_me_content = <<~MARKDOWN
-    Rails app generated with BetterCallBen template.
-  MARKDOWN
-  file "README.md", read_me_content, force: true
 end
+
+# Git
+########################################
+git :init
+git add: "."
+git commit: "-m 'First commit with BetterCallBen template with devise'"
+
+## Copy controller
+file "app/javascript/controllers/copy_controller.js",
+<<~JS
+  import { Controller } from "stimulus"
+
+  export default class extends Controller {
+    static targets = []
+    static values = {}
+
+    connect() {
+      console.log("BetterCallBen from CopyController!")
+    }
+  }
+JS
+
+## Copy controller
+file "app/javascript/controllers/notice_controller.js",
+<<~JS
+  import { Controller } from "stimulus"
+
+  export default class extends Controller {
+    static targets = []
+    static values = {}
+
+    close(event) {
+      event.currentTarget.remove()
+    }
+  }
+JS
+
+## Toto (test file)
+########################################
+file "toto.rb", <<~RUBY
+  puts "Toto!"
+RUBY
