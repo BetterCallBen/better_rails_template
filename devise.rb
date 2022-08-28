@@ -41,9 +41,24 @@ file 'app/assets/stylesheets/components/index.scss',
   @import "containers";
 CSS
 
+file 'app/assets/stylesheets/application.scss',
+<<-CSS
+  @import "config/index";
+  @import "components/index";
+CSS
+
 ## Config scss
 file 'app/assets/stylesheets/config/fonts.scss',
 <<-CSS
+  body {
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
   .bold {
     font-weight: bold;
   }
@@ -78,7 +93,7 @@ file 'app/assets/stylesheets/components/notices.scss',
 CSS
 
 
-file 'app/assets/stylesheets/components/container.scss',
+file 'app/assets/stylesheets/components/containers.scss',
 <<~CSS
   .container {
     width: 96vw;
@@ -226,6 +241,13 @@ after_bundle do
     end
   RUBY
 
+  file "app/views/pages/home.html.erb",
+  <<~HTML
+    <h1>Page Home</h1>
+    <h3>J'espère que ce template te facilitera la vie</h3>
+    <p>BetterCallBen :)</p>
+  HTML
+
   # Routes
   ########################################
   route "root to: 'pages#home'"
@@ -288,4 +310,5 @@ after_bundle do
   git commit: "-m 'First commit with BetterCallBen template with devise'"
   run "gh repo create --public --source=."
   git push: "origin master"
+  rails_command "server"
 end
