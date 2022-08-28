@@ -14,10 +14,8 @@ end
 inject_into_file "Gemfile", after: "group :development, :test do" do
   <<~RUBY
     gem 'amazing_print', '~> 1.0.0'
-    # gem 'faker', '~> 1.9'
     gem 'rspec-rails', '~> 5.0'
     gem 'factory_bot_rails', '~> 5.0'
-    # gem 'dotenv-rails'
 
   RUBY
 end
