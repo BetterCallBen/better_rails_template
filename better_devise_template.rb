@@ -11,12 +11,6 @@ inject_into_file "Gemfile", before: "group :development, :test do" do
   RUBY
 end
 
-inject_into_file "Gemfile", after: "gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]" do
-  <<-RUBY
-
-
-  RUBY
-end
 inject_into_file 'Gemfile', after: 'group :development, :test do' do
   <<-RUBY
   gem 'amazing_print', '~> 1.0.0'
