@@ -7,19 +7,20 @@ inject_into_file "Gemfile", before: "group :development, :test do" do
     gem "devise"
     gem "autoprefixer-rails"
     gem "font-awesome-sass", "~> 6.1"
+
   RUBY
 end
 
-# inject_into_file "Gemfile", after: "group :development, :test do" do
-#   <<~RUBY
-#     gem 'amazing_print', '~> 1.0.0'
-#     gem 'rspec-rails', '~> 5.0'
-#     gem 'factory_bot_rails', '~> 5.0'
-#     gem "faker"
+inject_into_file "Gemfile", after: "gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]" do
+  <<~RUBY
+    gem 'amazing_print', '~> 1.0.0'
+    gem 'rspec-rails', '~> 5.0'
+    gem 'factory_bot_rails', '~> 5.0'
+    gem "faker"
 
-#     gem 'dotenv-rails'
-#   RUBY
-# end
+    gem 'dotenv-rails'
+  RUBY
+end
 
 gsub_file("Gemfile", '# gem "sassc-rails"', 'gem "sassc-rails"')
 
@@ -99,12 +100,21 @@ end
 
 # Layout
 ########################################
+old_js_tag = <<~HTML
+  "<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>"
+HTML
 
-gsub_file(
-  "app/views/layouts/application.html.erb",
-  '<meta name="viewport" content="width=device-width,initial-scale=1">',
-  '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">'
-)
+new_js_tag = <<~HTML
+  "<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>"
+HTML
+
+gsub_file('app/views/layouts/application.html.erb', old_js_tag, new_js_tag)
+
+style = <<~HTML
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+HTML
+gsub_file('app/views/layouts/application.html.erb', "<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>", style)
 
 # Flashes
 ########################################
@@ -125,8 +135,7 @@ file "app/views/shared/_flashes.html.erb",
 HTML
 
 
-inject_into_file "app/views/layouts/application.html.erb", after: "<body>" do
-  <<~HTML
+inject_into_file "app/views/layouts/application.html.erb", after: "<body>" do <<~HTML
     <%= render "shared/flashes" %>
   HTML
 end
@@ -153,6 +162,42 @@ read_me_content = <<~MARKDOWN
 Rails app generated with BetterCallBen template.
 MARKDOWN
 file "README.md", read_me_content, force: true
+
+## Copy controller
+file "app/javascript/controllers/copy_controller.js",
+<<~JS
+  import { Controller } from "stimulus"
+
+  export default class extends Controller {
+    static targets = []
+    static values = {}
+
+    connect() {
+      console.log("BetterCallBen from CopyController!")
+    }
+  }
+JS
+
+## Copy controller
+file "app/javascript/controllers/notice_controller.js",
+<<~JS
+  import { Controller } from "stimulus"
+
+  export default class extends Controller {
+    static targets = []
+    static values = {}
+
+    close(event) {
+      event.currentTarget.remove()
+    }
+  }
+JS
+
+## Toto (test file)
+########################################
+file "toto.rb", <<~RUBY
+  puts "Toto!"
+RUBY
 
 
 ########################################
@@ -242,46 +287,11 @@ after_bundle do
   ########################################
   run "curl -L https://raw.githubusercontent.com/lewagon/rails-templates/master/.rubocop.yml > .rubocop.yml"
 
+  # Git
+  ########################################
+  git :init
+  git add: "."
+  git commit: "-m 'First commit with BetterCallBen template with devise'"
+  run "gh repo create --public --source=."
+  git push: "origin master"
 end
-
-# Git
-########################################
-git :init
-git add: "."
-git commit: "-m 'First commit with BetterCallBen template with devise'"
-
-## Copy controller
-file "app/javascript/controllers/copy_controller.js",
-<<~JS
-  import { Controller } from "stimulus"
-
-  export default class extends Controller {
-    static targets = []
-    static values = {}
-
-    connect() {
-      console.log("BetterCallBen from CopyController!")
-    }
-  }
-JS
-
-## Copy controller
-file "app/javascript/controllers/notice_controller.js",
-<<~JS
-  import { Controller } from "stimulus"
-
-  export default class extends Controller {
-    static targets = []
-    static values = {}
-
-    close(event) {
-      event.currentTarget.remove()
-    }
-  }
-JS
-
-## Toto (test file)
-########################################
-file "toto.rb", <<~RUBY
-  puts "Toto!"
-RUBY
