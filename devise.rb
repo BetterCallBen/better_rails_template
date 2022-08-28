@@ -1,8 +1,10 @@
+# Welcome to BetterCallBen Template
+
 run "if uname | grep -q 'Darwin'; then pgrep spring | xargs kill -9; fi"
 
 # Gemfile
 ########################################
-inject_into_file "Gemfile", before: "group :development, :test do" do
+inject_into_file 'Gemfile', before: 'group :development, :test do' do
   <<~RUBY
     gem "devise"
     gem "autoprefixer-rails"
@@ -16,40 +18,36 @@ inject_into_file "Gemfile", before: "group :development, :test do" do
   RUBY
 end
 
-gsub_file("Gemfile", '# gem "sassc-rails"', 'gem "sassc-rails"')
+gsub_file('Gemfile', '# gem "sassc-rails"', 'gem "sassc-rails"')
 
 # Assets
 ########################################
-run "rm -rf vendor"
-run "mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss"
-run "mkdir app/assets/stylesheets/config"
-run "mkdir app/assets/stylesheets/components"
-run "touch app/assets/stylesheets/config/colors.scss"
-run "touch app/assets/stylesheets/components/btns.scss"
+run 'rm -rf vendor'
+run 'mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss'
+run 'mkdir app/assets/stylesheets/config'
+run 'mkdir app/assets/stylesheets/components'
+run 'touch app/assets/stylesheets/config/colors.scss'
+run 'touch app/assets/stylesheets/components/btns.scss'
 
 ## Index scss
-file 'app/assets/stylesheets/config/index.scss',
-<<-CSS
+file 'app/assets/stylesheets/config/index.scss', <<~CSS
   @import "colors";
   @import "fonts";
 CSS
 
-file 'app/assets/stylesheets/components/index.scss',
-<<-CSS
+file 'app/assets/stylesheets/components/index.scss', <<~CSS
   @import "notices";
   @import "btns";
   @import "containers";
 CSS
 
-file 'app/assets/stylesheets/application.scss',
-<<-CSS
+file 'app/assets/stylesheets/application.scss', <<~CSS
   @import "config/index";
   @import "components/index";
 CSS
 
 ## Config scss
-file 'app/assets/stylesheets/config/fonts.scss',
-<<-CSS
+file 'app/assets/stylesheets/config/fonts.scss', <<~CSS
   body {
     font-family: 'Open Sans', sans-serif;
   }
@@ -65,8 +63,7 @@ file 'app/assets/stylesheets/config/fonts.scss',
 CSS
 
 ## Components scss
-file 'app/assets/stylesheets/components/notices.scss',
-<<-CSS
+file 'app/assets/stylesheets/components/notices.scss', <<~CSS
   .alert {
     position: fixed;
     bottom: 16px;
@@ -92,16 +89,14 @@ file 'app/assets/stylesheets/components/notices.scss',
   }
 CSS
 
-
-file 'app/assets/stylesheets/components/containers.scss',
-<<~CSS
+file 'app/assets/stylesheets/components/containers.scss', <<~CSS
   .container {
     width: 96vw;
     margin: 10 auto;
   }
 CSS
 
-inject_into_file "config/initializers/assets.rb", before: "# Precompile additional assets." do
+inject_into_file 'config/initializers/assets.rb', before: '# Precompile additional assets.' do
   <<~RUBY
     Rails.application.config.assets.paths << Rails.root.join("node_modules")
   RUBY
@@ -127,8 +122,7 @@ gsub_file('app/views/layouts/application.html.erb', "<%= stylesheet_link_tag 'ap
 
 # Flashes
 ########################################
-file "app/views/shared/_flashes.html.erb",
-<<~HTML
+file 'app/views/shared/_flashes.html.erb', <<~HTML
   <% if notice %>
     <div class="alert success" data-controller="notice">
       <%= notice.html_safe %>
@@ -143,9 +137,10 @@ file "app/views/shared/_flashes.html.erb",
   <% end %>
 HTML
 
-
-inject_into_file "app/views/layouts/application.html.erb", after: "<body>" do <<~HTML
+inject_into_file 'app/views/layouts/application.html.erb', after: '<body>' do
+  <<-HTML
     <%= render "shared/flashes" %>
+
   HTML
 end
 
@@ -168,13 +163,14 @@ environment generators
 # README
 ########################################
 read_me_content = <<~MARKDOWN
-Rails app generated with BetterCallBen template.
+  Rails app generated with BetterCallBen template.
 MARKDOWN
-file "README.md", read_me_content, force: true
+
+file 'README.md', read_me_content, force: true
 
 ## Copy controller
-file "app/javascript/controllers/copy_controller.js",
-<<~JS
+file 'app/javascript/controllers/copy_controller.js', <<~JS
+  // Utilise ce pour commencer les prochains controllers
   import { Controller } from "stimulus"
 
   export default class extends Controller {
@@ -188,8 +184,7 @@ file "app/javascript/controllers/copy_controller.js",
 JS
 
 ## Copy controller
-file "app/javascript/controllers/notice_controller.js",
-<<~JS
+file 'app/javascript/controllers/notice_controller.js', <<~JS
   import { Controller } from "stimulus"
 
   export default class extends Controller {
@@ -204,10 +199,10 @@ JS
 
 ## Toto (test file)
 ########################################
-file "toto.rb", <<~RUBY
+file 'toto.rb', <<~RUBY
+  ## fichier test
   puts "Toto!"
 RUBY
-
 
 ########################################
 # After bundle
@@ -216,23 +211,21 @@ after_bundle do
   # Generators: db + pages controller
   ########################################
 
-  rails_command "db:drop db:create db:migrate"
+  rails_command 'db:drop db:create db:migrate'
 
   # Application controller
   ########################################
-  run "rm app/controllers/application_controller.rb"
-  file "app/controllers/application_controller.rb",
-  <<~RUBY
+  run 'rm app/controllers/application_controller.rb'
+  file 'app/controllers/application_controller.rb', <<~RUBY
     class ApplicationController < ActionController::Base
       before_action :authenticate_user!
     end
   RUBY
 
-  generate(:controller, "pages", "home", "--skip-routes", "--no-test-framework")
+  generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
 
-  run "rm app/controllers/pages_controller.rb"
-  file "app/controllers/pages_controller.rb",
-  <<~RUBY
+  run 'rm app/controllers/pages_controller.rb'
+  file 'app/controllers/pages_controller.rb', <<~RUBY
     class PagesController < ApplicationController
       skip_before_action :authenticate_user!, only: [ :home ]
 
@@ -241,8 +234,7 @@ after_bundle do
     end
   RUBY
 
-  file "app/views/pages/home.html.erb",
-  <<~HTML
+  file 'app/views/pages/home.html.erb', <<~HTML
     <h1>Page Home</h1>
     <h3>J'espère que ce template te facilitera la vie</h3>
     <p>BetterCallBen :)</p>
@@ -254,8 +246,7 @@ after_bundle do
 
   # Gitignore
   ########################################
-  append_file ".gitignore",
-  <<~TXT
+  append_file '.gitignore', <<~TXT
     .env*
     *.swp
     .DS_Store
@@ -263,20 +254,20 @@ after_bundle do
 
   # Devise install + user
   ########################################
-  generate("devise:install")
-  generate("devise", "User")
-  rails_command "db:migrate"
-  generate("devise:views")
+  generate('devise:install')
+  generate('devise', 'User')
+  rails_command 'db:migrate'
+  generate('devise:views')
 
   # Environments
   ########################################
-  environment 'config.action_mailer.default_url_options = { host: "http://localhost:3000" }', env: "development"
-  environment 'config.action_mailer.default_url_options = { host: "http://TODO_PUT_YOUR_DOMAIN_HERE" }', env: "production"
+  environment 'config.action_mailer.default_url_options = { host: "http://localhost:3000" }', env: 'development'
+  environment 'config.action_mailer.default_url_options = { host: "http://TODO_PUT_YOUR_DOMAIN_HERE" }', env: 'production'
 
   # Stimulus
   ########################################
-  run "rails webpacker:install:stimulus"
-  run "rm app/javascript/controllers/hello_controller.js"
+  run 'rails webpacker:install:stimulus'
+  run 'rm app/javascript/controllers/hello_controller.js'
 
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
     <<~JS
@@ -285,15 +276,14 @@ after_bundle do
     JS
   end
 
-  append_file ".gitignore",
-  <<~JS
+  append_file '.gitignore', <<~JS
 
     import "controllers"
   JS
 
   # Heroku
   ########################################
-  run "bundle lock --add-platform x86_64-linux"
+  run 'bundle lock --add-platform x86_64-linux'
 
   # Dotenv
   ########################################
@@ -301,14 +291,14 @@ after_bundle do
 
   # Rubocop
   ########################################
-  run "curl -L https://raw.githubusercontent.com/lewagon/rails-templates/master/.rubocop.yml > .rubocop.yml"
+  run 'curl -L https://raw.githubusercontent.com/lewagon/rails-templates/master/.rubocop.yml > .rubocop.yml'
 
   # Git
   ########################################
   git :init
-  git add: "."
+  git add: '.'
   git commit: "-m 'First commit with BetterCallBen template with devise'"
-  run "gh repo create --public --source=."
-  git push: "origin master"
-  rails_command "server"
+  run 'gh repo create --public --source=.'
+  git push: 'origin master'
+  rails_command 'server'
 end
