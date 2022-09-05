@@ -23,7 +23,7 @@ gsub_file('Gemfile', '# gem "sassc-rails"', 'gem "sassc-rails"')
 # Assets
 ########################################
 run 'rm -rf vendor'
-run 'rm app/assets/stylesheets'
+run 'rm -rf app/assets/stylesheets'
 
 ## Folders
 run 'mkdir app/assets/stylesheets'
