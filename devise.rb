@@ -23,9 +23,15 @@ gsub_file('Gemfile', '# gem "sassc-rails"', 'gem "sassc-rails"')
 # Assets
 ########################################
 run 'rm -rf vendor'
-run 'mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss'
+run 'rm app/assets/stylesheets'
+
+## Folders
+run 'mkdir app/assets/stylesheets'
 run 'mkdir app/assets/stylesheets/config'
 run 'mkdir app/assets/stylesheets/components'
+
+## Files
+run 'touch app/assets/stylesheets/application.scss'
 run 'touch app/assets/stylesheets/config/colors.scss'
 run 'touch app/assets/stylesheets/components/btns.scss'
 
@@ -234,6 +240,7 @@ after_bundle do
     end
   RUBY
 
+  run 'rm app/views/pages/home.html.erb'
   file 'app/views/pages/home.html.erb', <<~HTML
     <h1>Page Home</h1>
     <h3>J'espère que ce template te facilitera la vie</h3>
