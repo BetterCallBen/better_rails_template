@@ -31,7 +31,6 @@ run 'mkdir app/assets/stylesheets/config'
 run 'mkdir app/assets/stylesheets/components'
 
 ## Files
-run 'touch app/assets/stylesheets/application.scss'
 run 'touch app/assets/stylesheets/config/colors.scss'
 run 'touch app/assets/stylesheets/components/btns.scss'
 
